@@ -1,0 +1,9 @@
+namespace: default
+appName: gaurav
+envName: qa
+appUpstreamURL: http://gaurav.svc.cluster.local:8501
+deployment:
+  oauthproxy:
+    image:
+      repo: prod-nexus.company.com:8123/openresty-gauth
+      tag: latest

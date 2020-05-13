@@ -1,0 +1,53 @@
+---
+kind: Deployment
+{{- if and ( eq (int .Capabilities.KubeVersion.Major) 1) ( gt (int .Capabilities.KubeVersion.Minor) 16 ) }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: apps/v1beta2
+{{- end }}
+metadata:
+  name: "gauth-proxy-{{ .Values.appName }}-deployment"
+  namespace: "{{ .Values.namespace }}"
+  labels:
+    app: gauth-proxy
+    tier: "{{ .Values.appName }}"
+spec:
+  selector:
+    matchLabels:
+      app: gauth-proxy
+      tier: "{{ .Values.appName }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gauth-proxy
+        tier: "{{ .Values.appName }}"
+    spec:
+      containers:
+      - name: "gauth-proxy-{{ .Values.appName }}-container"
+        image: {{ .Values.deployment.oauthproxy.image.repo }}:{{ .Values.deployment.oauthproxy.image.tag }}
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 150
+          periodSeconds: 2
+          successThreshold: 1
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 2
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 150
+          periodSeconds: 2
+          successThreshold: 2
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      dnsPolicy: ClusterFirst

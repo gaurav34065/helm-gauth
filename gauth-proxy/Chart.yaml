@@ -1,0 +1,8 @@
+description: Sample Gauth
+maintainers:
+- email: gaurav_sharma34065@yahoo.com
+  name: Gaurav
+name: gauth-proxy
+version: 0.1.0
+appVersion: 1.0.0
+kubeVersion: "^1.8.0-0"
